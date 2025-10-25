@@ -36,6 +36,7 @@ class Player(pygame.sprite.Sprite):
             self.vy = 20
 
     def update(self, dt, level):
+
         # movimiento horizontal con colisión tile-based
         self.rect.x += self.vx
         self._collide(self.vx, 0, level.tiles)
@@ -60,3 +61,4 @@ class Player(pygame.sprite.Sprite):
                 if vy < 0:  # subiendo
                     self.rect.top = t.bottom
                     self.vy = 0
+    
