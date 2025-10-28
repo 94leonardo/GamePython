@@ -27,10 +27,11 @@ class Button:
             if self.rect.collidepoint(event.pos):
                 self.callback()
 
+
 def main_menu(screen):
+    running = True
     clock = pygame.time.Clock()
     title_font = pygame.font.Font(None, 80)
-    running = True
     title_color = (255, 255, 255)
     title_glow = 0
 
