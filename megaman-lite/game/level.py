@@ -5,36 +5,69 @@ from game.settings import TILE_SIZE
 
 class Level:
     """
-    Nivel simple construido desde lista de strings.
-    '1' -> tile/ground
+    Clase Level: representa un nivel 2D basado en un archivo o lista.
+    '1' -> bloque sólido
     '0' -> vacío
     'M' -> meta (llegada)
     """
 
-    def __init__(self, layout):
+    def __init__(self, source):
+        self.tiles = []  # Bloques sólidos
+        self.meta_rects = []  # Zonas meta amarillas
+
+        if isinstance(source, str):  # Si se pasa una ruta
+            self._load_from_file(source)
+        elif isinstance(source, list):  # Si se pasa layout directo
+            self._load_from_layout(source)
+        else:
+            raise TypeError("El nivel debe ser un archivo o una lista de strings.")
+
+    def _load_from_file(self, file_path):
+        """Carga un nivel desde un archivo de texto"""
+        with open(file_path, "r") as f:
+            layout = [line.strip() for line in f.readlines()]
+        self._load_from_layout(layout)
+
+    def _load_from_layout(self, layout):
+        """Carga un nivel desde una lista de strings"""
         self.layout = layout
         self.width = len(layout[0]) * TILE_SIZE
         self.height = len(layout) * TILE_SIZE
-        self.tiles = []
-        self.meta_rects = []
-        self._build()
 
-    def _build(self):
-        for row_idx, row in enumerate(self.layout):
-            for col_idx, ch in enumerate(row):
-                x = col_idx * TILE_SIZE
-                y = row_idx * TILE_SIZE
-                if ch == "1":
-                    rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
+        for y, row in enumerate(layout):
+            for x, cell in enumerate(row):
+                if cell == "1":
+                    rect = pygame.Rect(
+                        x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE
+                    )
                     self.tiles.append(rect)
-                elif ch == "M":
-                    self.meta_rects.append(pygame.Rect(x, y, TILE_SIZE, TILE_SIZE))
+                elif cell == "M":
+                    meta = pygame.Rect(
+                        x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE
+                    )
+                    self.meta_rects.append(meta)
 
-    def draw(self, surface, camera):
-        # dibuja tiles simples (puedes reemplazarlos por sprites luego)
-        for t in self.tiles:
-            r = camera.apply_rect(t)
-            pygame.draw.rect(surface, (70, 120, 200), r)
+    def draw(self, screen, camera):
+        """Dibuja el nivel con desplazamiento de cámara"""
+        for tile in self.tiles:
+            pygame.draw.rect(
+                screen,
+                (100, 100, 100),
+                (
+                    tile.x - camera.camera["x"],
+                    tile.y - camera.camera["y"],
+                    TILE_SIZE,
+                    TILE_SIZE,
+                ),
+            )
         for m in self.meta_rects:
-            r = camera.apply_rect(m)
-            pygame.draw.rect(surface, (220, 200, 70), r)
+            pygame.draw.rect(
+                screen,
+                (255, 255, 0),
+                (
+                    m.x - camera.camera["x"],
+                    m.y - camera.camera["y"],
+                    TILE_SIZE,
+                    TILE_SIZE,
+                ),
+            )

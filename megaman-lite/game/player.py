@@ -1,15 +1,16 @@
 # game/player.py
 import pygame
-from game.settings import PLAYER_SPEED, PLAYER_RUN_MULT, PLAYER_JUMP_SPEED, GRAVITY
+from game.settings import PLAYER_SPEED, PLAYER_RUN_MULT, PLAYER_JUMP_SPEED, GRAVITY, TILE_SIZE
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         # sprite provisional: rect simple
-        self.image = pygame.Surface((32, 40), pygame.SRCALPHA)
-        pygame.draw.rect(self.image, (220, 60, 80), (0, 0, 32, 40))
+        self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
+        self.image.fill((0, 100, 255))
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.vel_y = 0
         self.vx = 0
         self.vy = 0
         self.on_ground = False
@@ -61,4 +62,3 @@ class Player(pygame.sprite.Sprite):
                 if vy < 0:  # subiendo
                     self.rect.top = t.bottom
                     self.vy = 0
-    
