@@ -8,7 +8,9 @@ from game.engine import run_game
 class Button:
     def __init__(self, text, pos, width, height, callback):
         self.text = text
-        self.rect = pygame.Rect(pos[0], pos[1], width, height)
+        # Asegurar que el botón esté centrado horizontalmente
+        x = pos[0] - width // 2
+        self.rect = pygame.Rect(x, pos[1], width, height)
         self.color = (100, 100, 255)
         self.hover_color = (150, 150, 255)
         self.callback = callback
@@ -43,12 +45,26 @@ def main_menu(screen):
         pygame.quit()
         sys.exit()
 
-    # Botones
+    # 🔥 BOTONES CENTRADOS - Coordenadas corregidas
+    button_width, button_height = 200, 50
+
+    # Calcular posiciones Y centradas verticalmente
+    center_x = WIDTH // 2
+    center_y = HEIGHT // 2
+
     button_play = Button(
-        "JUGAR", (WIDTH // 2 - 100, HEIGHT // 2 - 40), 200, 50, start_game
+        "JUGAR",
+        (center_x, center_y - 30),  # Centrado horizontal, ligeramente arriba del centro
+        button_width,
+        button_height,
+        start_game,
     )
     button_quit = Button(
-        "SALIR", (WIDTH // 2 - 100, HEIGHT // 2 + 30), 200, 50, quit_game
+        "SALIR",
+        (center_x, center_y + 40),  # Centrado horizontal, ligeramente abajo del centro
+        button_width,
+        button_height,
+        quit_game,
     )
 
     buttons = [button_play, button_quit]
@@ -68,12 +84,22 @@ def main_menu(screen):
         title_glow = (title_glow + 2) % 255
         title_color = (255, 255 - title_glow // 2, 255 - title_glow // 2)
 
-        # Renderizar título
+        # 🔥 TÍTULO CENTRADO
         title_surf = title_font.render("MEGALITE", True, title_color)
-        title_rect = title_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 150))
+        title_rect = title_surf.get_rect(
+            center=(WIDTH // 2, HEIGHT // 4)
+        )  # 1/4 desde arriba
         screen.blit(title_surf, title_rect)
 
-        # Dibujar botones
+        # 🔥 TEXTO INFORMATIVO CENTRADO (opcional)
+        info_font = pygame.font.SysFont("Arial", 18)
+        info_text = info_font.render(
+            "Plataformas estilo Megaman", True, (200, 200, 200)
+        )
+        info_rect = info_text.get_rect(center=(WIDTH // 2, HEIGHT // 4 + 60))
+        screen.blit(info_text, info_rect)
+
+        # Dibujar botones (ya están centrados)
         for b in buttons:
             b.draw(screen)
 

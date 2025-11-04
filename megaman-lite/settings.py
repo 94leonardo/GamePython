@@ -3,6 +3,7 @@ WIDTH = 800
 HEIGHT = 480
 FPS = 60
 TITLE = "Megaman Lite - Etapa 1"
+TILE_SIZE = 24
 
 # Colores
 BACKGROUND_COLOR = (25, 25, 35)

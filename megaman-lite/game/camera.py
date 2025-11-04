@@ -1,22 +1,26 @@
 # game/camera.py
-from game.settings import WIDTH, HEIGHT
+import pygame
+
 
 class Camera:
-    def __init__(self, level_width, level_height):
-        self.camera = {'x': 0, 'y': 0}
-        self.width = level_width
-        self.height = level_height
+    def __init__(self, width, height):
+        self.camera = pygame.Rect(0, 0, width, height)
+        self.width = width
+        self.height = height
 
-    def apply_rect(self, rect):
-        return rect.move(-self.camera['x'], -self.camera['y'])
+    def apply(self, rect):
+        """Aplica el desplazamiento de la cámara a un rectángulo."""
+        return rect.move(-self.camera_rect.topleft[0], -self.camera_rect.topleft[1])
 
     def update(self, target):
-        # centrar en target, con límites
-        x = target.rect.centerx - WIDTH // 2
-        y = target.rect.centery - HEIGHT // 2
+        """Centra la cámara en el objetivo (jugador), sin salirse del mapa."""
+        x = -target.rect.x + 480  # mitad de pantalla (960/2)
+        y = -target.rect.y + 270  # mitad de pantalla (540/2)
 
-        x = max(0, min(x, self.width - WIDTH))
-        y = max(0, min(y, self.height - HEIGHT))
+        # Limitar la cámara a los bordes del nivel
+        x = min(0, x)
+        x = max(-(self.width - 960), x)
+        y = min(0, y)
+        y = max(-(self.height - 540), y)
 
-        self.camera['x'] = int(x)
-        self.camera['y'] = int(y)
+        self.camera_rect = pygame.Rect(x, y, self.width, self.height)
